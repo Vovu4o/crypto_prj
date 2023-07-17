@@ -7,11 +7,29 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
     <title>Document</title>
 </head>
-<body style="background-color: #0e111f;">
+<body style="background-color: #1e2648;">
     <header >
-        <div style="margin-left: auto;margin-right: auto;width:150px">
-            <p style="color:rgb(30, 98, 69);font-size: 30px;">Spreads</p>
+        <div style="margin-left: auto;margin-right: auto;width:150px; margin-top: 30px; margin-bottom: 0px;">
+            <p style="color:#008064;font-size: 40px;font-weight: 700;margin-left: auto;margin-right: auto;">Spreads</p>
         </div>
+        <div style="margin-left: auto;margin-right: auto;width:400px; margin-top: 0px">
+            <p style="color:#008064;font-size: 20px;font-weight: 500;margin-left: auto;margin-right: auto;width:220px">Find the best difference</p>
+        </div>
+        <hr style="color:#008064;  height: 3px;border: none;margin-top: 5px;opacity:100;">
     </header>
+    <div style="margin-left: auto;margin-right: auto;width:1300px;">
+        <ul class="nav nav-tabs" id="myTab" role="tablist" style="border-bottom: #008064 1px solid;">
+            <li class="nav-item" role="presentation" style="margin-left: auto;margin-right: auto; width:225px">
+              <button class="nav-link active" id="OTC-tab" data-bs-toggle="tab" data-bs-target="#OTC" type="button" role="tab" aria-controls="OTC" aria-selected="true" style="color:#008064;font-size:16px;font-weight:500;font-family: var(--bs-font-sans-serif);">OTC arbitrage</button>
+            </li>
+            <li class="nav-item" role="presentation" style="margin-left: auto;margin-right: auto; width:225px">
+              <button class="nav-link" id="Intra-exchange-tab" data-bs-toggle="tab" data-bs-target="#Intra-exchange" type="button" role="tab" aria-controls="Intra-exchange" aria-selected="false" style="color:#008064;font-size:16px;font-weight:500;font-family: var(--bs-font-sans-serif);">Intra-exchange arbitrage</button>
+            </li>
+          </ul>
+          <div class="tab-content" id="myTabContent">
+            <div class="tab-pane fade show active" id="OTC" role="tabpanel" aria-labelledby="OTC-tab" style="color: white">OTC</div>
+            <div class="tab-pane fade" id="Intra-exchange" role="tabpanel" aria-labelledby="Intra-exchange-tab" style="color: white">Intra-exchange</div>
+          </div>
+    </div>
 </body>
-</html>
+</html> 
