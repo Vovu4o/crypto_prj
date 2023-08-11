@@ -66,16 +66,16 @@ def create_triangle():
             file.write(":".join(tri) + '\n')
 
 def make_topics():
+    triangle = make_triangle()
     all_topics = []
-    with open("triangles.txt") as f:
-        triangles = [tri.strip('\n') for tri in f.readlines()]
-        for tri in range(len(triangles) // CONNECTIONS):
-            topic = ""
-            for tri_topic in range(CONNECTIONS):
-                topic += triangles[tri_topic + CONNECTIONS * tri].replace(":", ',') + ','
-            all_topics += [topic]
-    # делаем фильтрацию подписок
-    all_topics = [",".join(set(new_topic.split(',')[:-1])) for new_topic in all_topics]
+    keys = list(triangle.keys())
+    for pair in range(len(keys) // 67):      
+        topic = ""
+        for t in range(67):
+            topic += keys[pair * 7 + t] + ','
+        else:
+            topic = topic[:-1]
+        all_topics += [topic]
     return all_topics
 
 
@@ -88,7 +88,7 @@ def subscribe(topic):
     })
     return subscribe_msg
 
-def ping_msg(id):
+def get_ping_msg(id):
     msg = json.dumps({"id": id, "type": "ping"})
     return msg
 
