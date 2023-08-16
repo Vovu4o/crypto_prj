@@ -7,7 +7,7 @@ import websockets
 
 async def handler(websocket):
     async for msg in websocket:
-        print(json.loads(msg))
+        await websocket.send(json.loads(msg))
 
 
 async def server():
