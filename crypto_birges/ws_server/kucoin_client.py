@@ -18,8 +18,8 @@ def prevent_request():
     assert r.status_code == 200
     response = r.json()
     token = response['data']['token']
-    ping_interval = response['data']['instanceServers'][0]['pingInterval']
-    ping_timeout = response['data']['instanceServers'][0]['pingTimeout']
+    ping_interval = float(response['data']['instanceServers'][0]['pingInterval']) / 1000
+    ping_timeout = float(response['data']['instanceServers'][0]['pingTimeout']) / 1000 - 1
     endpoint = response['data']['instanceServers'][0]['endpoint']
 
     return {

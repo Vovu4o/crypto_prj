@@ -1,5 +1,6 @@
 import asyncio 
 import logging
+import sys 
 import json
 import time
 from uuid import uuid4
@@ -34,33 +35,60 @@ async def subscribe_channel(ws, msg):
 
 topics =  make_topics()
 
-async def main():
-    uri = "ws://localhost:2010"
-    connect_id = str(uuid4()).replace('-', '')
-    last_ping = time.time()
-    async with websockets.connect(uri) as websocket:
+
+async def create_connection(uri, timeout=60, *args, **kwargs):
+    connection = await asyncio.wait_for(websockets.connect(uri), timeout)
+    return connection
+
+
+
+
+async def handler(websocket):
+    kucoin_connect_id = str(uuid4()).replace('-', '')
+    kucoin_msg = subscribe('all')
+    kucoin_uri = f"{endpoint}/?token={token}&connectId={kucoin_connect_id}"
+    kucoin_websocket = await create_connection(kucoin_uri)
+    ping_time = time.time()
+
+    await kucoin_websocket.send(kucoin_msg)
+    async for message in kucoin_websocket:
         try:
-            async with websockets.connect(f"{endpoint}/?token={token}&connectId={connect_id}") as ws:
-                """подключаемся к 1 веб-сокету и подписываемся на рассылку всех валют"""
-                subs_msg = subscribe("all")
-                await ws.send(subs_msg)
-                msg = await ws.recv()
-                channel_id = json.loads(str(msg)).get('id')
-                if channel_id:
-                    ping_msg = get_ping_msg(channel_id)
-                while True:
-                    async for msg in ws:
-                        if time.time() - last_ping >= ping_interval:
-                            await ws.send(ping_msg(str(int(time.time()) * 1000)), timeout=ping_timeout)
-                            await websocket.ping()
-                        now = time.time()
-                        await websocket.send(json.dumps(msg))
+            if time.time() - ping_time > ping_interval:
+                await kucoin_websocket.send(get_ping_msg(str(int(time.time()) * 1000)), timeout=ping_timeout)
+                ping_time = time.time()
+                        # data = await kucoin_websocket.recv()
+            await websocket.send(message)
+
         except websockets.exceptions.ConnectionClosedOK:
             print("Error in need ws")
+            sys.exit(0)
         except websockets.exceptions.ConnectionClosedError:
             print("We didn't close")
+            sys.exit(0)
+        except websocket.ConnectionClosed:
+
+
+            kucoin_connect_id = str(uuid4()).replace('-', '')
+            kucoin_msg = subscribe('all')
+            kucoin_uri = f"{endpoint}/?token={token}&connectId={kucoin_connect_id}"
+            kucoin_websocket = await create_connection(kucoin_uri)
+            ping_time = time.time()
+
+            await kucoin_websocket.send(kucoin_msg)
+            async for message in kucoin_websocket:
+                    if time.time() - ping_time > ping_interval:
+                        await kucoin_websocket.send(get_ping_msg(str(int(time.time()) * 1000)), timeout=ping_timeout)
+                        ping_time = time.time()
+                                # data = await kucoin_websocket.recv()
+                    await websocket.send(message)
+        
+async def create_server():
+    async with websockets.serve(handler, "localhost", '2010') as ws:
+        await asyncio.Future()
+
+
 
 
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    asyncio.run(create_server())
